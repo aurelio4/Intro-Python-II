@@ -1,4 +1,5 @@
 from room import Room
+from player import Player
 
 # Declare all the rooms
 
@@ -37,7 +38,16 @@ room['treasure'].s_to = room['narrow']
 # Main
 #
 
+def try_move(player, direction):
+    attr = direction + '_to'
+    if hasattr(player.location, attr):
+        player.location = getattr(player.location, attr)
+    else:
+        print('Nothing in that direction!\n')
+
 # Make a new player object that is currently in the 'outside' room.
+
+player = Player('test', room['outside'])
 
 # Write a loop that:
 #
@@ -49,3 +59,26 @@ room['treasure'].s_to = room['narrow']
 # Print an error message if the movement isn't allowed.
 #
 # If the user enters "q", quit the game.
+userPlaying = True
+
+while userPlaying:
+    print(player.location)
+
+    command = input('\nWhich way do you want to go?: ').strip().lower().split()
+    first_letter = command[0]
+    command = first_letter[0]
+
+    if command == 'q':
+        userPlaying = False
+    
+    if command == 'n':
+        try_move(player, command)
+    elif command == 's':
+        try_move(player, command)
+    elif command == 'e':
+        try_move(player, command)
+    elif command == 'w':
+        try_move(player, command)
+    else:
+        print('\nNot a valid command!')
+
