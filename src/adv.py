@@ -1,5 +1,7 @@
 from room import Room
 from player import Player
+from item import Item
+import random
 
 # Declare all the rooms
 
@@ -45,9 +47,32 @@ def try_move(player, direction):
     else:
         print('Nothing in that direction!\n')
 
+def generate_room_items(items):
+    for item in items:
+        items[item].is_in_room = False
+    
+    numbers = random.sample(range(1, 9), 3)
+    items[int(numbers[0])].is_in_room = True
+    items[int(numbers[1])].is_in_room = True
+    items[int(numbers[2])].is_in_room = True
+
+    print(f"Items in this room are: {items[int(numbers[0])]}, {items[int(numbers[1])]}, and {items[int(numbers[2])]}")
+
+items = {
+    1 : Item(1, 'Lantern', False),
+    2 : Item(2, 'Watch', False),
+    3 : Item(3, 'Note', False),
+    4 : Item(4, 'Thimble', False),
+    5 : Item(5, 'Key', False),
+    6 : Item(6, 'Lighter', False),
+    7 : Item(7, 'Stick', False),
+    8 : Item(8, 'Monacle', False),
+    9 : Item(9, 'Hat', False)
+}
+
 # Make a new player object that is currently in the 'outside' room.
 
-player = Player('test', room['outside'])
+player = Player('test', room['outside'], [])
 
 # Write a loop that:
 #
@@ -60,25 +85,48 @@ player = Player('test', room['outside'])
 #
 # If the user enters "q", quit the game.
 userPlaying = True
+valid_command = False
 
 while userPlaying:
     print(player.location)
+    generate_room_items(items)
+    valid_command = False
 
-    command = input('\nWhich way do you want to go?: ').strip().lower().split()
-    first_letter = command[0]
-    command = first_letter[0]
+    while not valid_command:
+        # get user input
+        command = input('\nWhat do you want to do?: ').strip().lower().split()
+        first_letter = command[0]
+        first_first_letter = first_letter[0]
 
-    if command == 'q':
-        userPlaying = False
-    
-    if command == 'n':
-        try_move(player, command)
-    elif command == 's':
-        try_move(player, command)
-    elif command == 'e':
-        try_move(player, command)
-    elif command == 'w':
-        try_move(player, command)
-    else:
-        print('\nNot a valid command!')
+        # REPL parser
 
+        # handling player wanting to alt-f4
+        if first_first_letter == 'q':
+            userPlaying = False
+
+        # handling item pickup
+        if command[0] == 'get':
+            # check if the item is in that room
+            if len(command) == 2:
+                for key, value in items.items():
+                    if value.item_name.lower() == command[1]:
+                        if value.is_in_room:
+                            player.items.append(value.item_name)
+                            print(f'Item: {value.item_name} added to inventory')
+                        else:
+                            print(f"That item isn't in the room!")
+            else:
+                print('Please specify the item you want to pick up (ex: get [item_name])\n')
+                continue
+        
+        # handling movement commands
+        if first_first_letter == 'n':
+            try_move(player, first_first_letter)
+        elif first_first_letter == 's':
+            try_move(player, first_first_letter)
+        elif first_first_letter == 'e':
+            try_move(player, first_first_letter)
+        elif first_first_letter == 'w':
+            try_move(player, first_first_letter)
+        else:
+            print('\nNot a valid command!')
