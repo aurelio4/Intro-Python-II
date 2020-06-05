@@ -103,6 +103,24 @@ while userPlaying:
         # handling player wanting to alt-f4
         if first_first_letter == 'q':
             userPlaying = False
+        
+        # handling movement commands
+        if first_first_letter == 'n':
+            try_move(player, first_first_letter)
+            valid_command = True
+        elif first_first_letter == 's':
+            try_move(player, first_first_letter)
+            valid_command = True
+        elif first_first_letter == 'e':
+            try_move(player, first_first_letter)
+            valid_command = True
+        elif first_first_letter == 'w':
+            try_move(player, first_first_letter)
+            valid_command = True
+
+        # listing the items
+        if command[0] == 'list':
+            print(f"Your items are: {player.items}")
 
         # handling item pickup
         if command[0] == 'get':
@@ -119,14 +137,16 @@ while userPlaying:
                 print('Please specify the item you want to pick up (ex: get [item_name])\n')
                 continue
         
-        # handling movement commands
-        if first_first_letter == 'n':
-            try_move(player, first_first_letter)
-        elif first_first_letter == 's':
-            try_move(player, first_first_letter)
-        elif first_first_letter == 'e':
-            try_move(player, first_first_letter)
-        elif first_first_letter == 'w':
-            try_move(player, first_first_letter)
-        else:
-            print('\nNot a valid command!')
+        # handling item drop
+        if command[0] == 'drop':
+            # check if item is in inventory
+            if len(command) == 2:
+                for items in player.items:
+                    if items.lower() == command[1]:
+                        player.items.remove(items)
+                        print(f'Dropped item: {items}')
+                    else:
+                        print(f"You aren't carrying that item!")
+            else:
+                print('Please specify the item you want to drop (ex: drop [item_name])\n')
+                continue
